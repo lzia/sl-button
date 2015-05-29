@@ -1,0 +1,259 @@
+<!--
+    @license
+    Copyright (c) 2014 The Polymer Project Authors. All rights reserved.
+    This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+    The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+    The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+    Code distributed by Google as part of the polymer project is also
+    subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+<link rel="import" href="../polymer/polymer.html">
+
+<!--
+Arcade button implementing Material Design that emits events to a Sealion Console or to a parent document.
+
+CSS:
+
+    sl-button.meow {
+      --radius: 100px;
+      --bgcolor: blue;
+      --font-size: 30px;
+      --font-color: white;
+      --font: 'Helvetica'
+    }
+
+HTML:
+
+    <sl-button class="meow" label="X" action="fire"></sl-button>
+
+@demo
+-->
+
+<dom-module id="sl-button">
+  <template>
+    <style>
+      :root {
+        --radius: 100px;
+        --bgcolor: green;
+        --font-size: 30px;
+        --font-color: white;
+        --ripple-color: white;
+        --font: 'Helvetica';
+      }
+
+      .outer-button {
+        font-family: var(--font);
+        text-align: center;
+        user-select: none;
+        position: relative;
+        display: table-cell;
+        vertical-align: middle;
+        border-radius: 50%;
+        height: var(--radius);
+        width: var(--radius);
+        background-color: var(--bgcolor);
+        overflow: hidden;
+        /* Fix Overflow */
+
+        -webkit-mask-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAIAAACQd1PeAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAA5JREFUeNpiYGBgAAgwAAAEAAGbA+oJAAAAAElFTkSuQmCC);
+        box-shadow: 0px 0px 5px #000;
+        cursor: pointer;
+      }
+
+      .label {
+        font-size: var(--font-size);
+        color: var(--font-color);
+      }
+
+      .ripple-effect {
+        position: absolute;
+        border-radius: 50%;
+        width: 10px;
+        height: 10px;
+        background-color: var(--ripple-color);
+        -webkit-animation: ripple-animation 1s;
+        animation: ripple-animation 1s;
+      }
+
+      @-webkit-keyframes ripple-animation {
+        from {
+          -ms-transform: scale(1);
+          -webkit-transform: scale(1);
+          transform: scale(1);
+          opacity: 0.3;
+        }
+        to {
+          -ms-transform: scale(100);
+          -webkit-transform: scale(100);
+          transform: scale(100);
+          opacity: 0;
+        }
+      }
+
+      @keyframes ripple-animation {
+        from {
+          -ms-transform: scale(1);
+          -webkit-transform: scale(1);
+          transform: scale(1);
+          opacity: 0.3;
+        }
+        to {
+          -ms-transform: scale(100);
+          -webkit-transform: scale(100);
+          transform: scale(100);
+          opacity: 0;
+        }
+      }
+    </style>
+
+    <div class="outer-button" id="sealion" on-touchstart="_handleTouchStart" on-touchend="_handleTouchEnd" on-mousedown="_handleMouseDown" on-mouseup="_handleMouseUp">
+      <span class="label">{{label}}</span>
+    </div>
+
+  </template>
+</dom-module>
+
+<script>
+  // Adds a css class to the given element.
+  function addClass(element, classToAdd) {
+    var currentClassValue = element.className;
+
+    if (currentClassValue.indexOf(classToAdd) == -1) {
+      if ((currentClassValue == null) || (currentClassValue === "")) {
+        element.className = classToAdd;
+      } else {
+        element.className += " " + classToAdd;
+      }
+    }
+  };
+
+  Polymer({
+    is: 'sl-button',
+
+    properties: {
+      /**
+       * Letter that gets displayed.
+       *
+       * @default 'A'
+       */
+      label: {
+        type: String,
+        value: 'X'
+      },
+
+      /**
+       * Name of the function that will be called in the Sealion App, when
+       * this element's events are fired.
+       */
+      action: {
+        type: String,
+        value: ''
+      }
+    },
+
+    /**
+     * Socket.IO's object that emits this element's events to Sealion
+     * Console.
+     *
+     * @property socket
+     * @type {Object}
+     */
+    socket: undefined,
+
+    /**
+     * Sets element's socket.
+     *
+     * @param {Object} socket Socket.IO socket
+     */
+    useSocket: function (socket) {
+      this.socket = socket;
+    },
+
+    /**
+     * Emits the action to the Sealion console.
+     *
+     * @event on-touchstart
+     * @param {Object} event on-touchstart callback.
+     */
+    _handleTouchStart: function (event) {
+      event.preventDefault();
+      var touch = event.touches[0] || event.changedTouches[0];
+      this._ripple(touch);
+      // The socket must be defined outside in the controller.
+      if (this.socket) {
+        socket.emit('event', {
+          action: this.action
+        });
+      }
+    },
+
+    /**
+     * Emits the action to the Sealion console.
+     *
+     * @event on-touchend
+     * @param {Object} event on-touchend callback.
+     */
+    _handleTouchEnd: function (event) {
+      event.preventDefault();
+      if (this.socket) {
+        socket.emit('event', {
+          action: this.action
+        });
+      }
+    },
+
+    /**
+     * Emits the action to the Sealion console.
+     *
+     * @event on-mouseup
+     * @param {Object} event on-mouseup callback.
+     */
+    _handleMouseUp: function (event) {
+      event.preventDefault();
+      if (this.socket) {
+        socket.emit('event', {
+          action: this.action
+        });
+      }
+    },
+
+    /**
+     * Emits the action to the Sealion console.
+     *
+     * @event on-mousedown
+     * @param {Object} event on-mousedown callback.
+     */
+    _handleMouseDown: function (event) {
+      event.preventDefault();
+      if (this.socket) {
+        socket.emit('event', {
+          action: this.action
+        });
+      }
+    },
+
+    /**
+     * Applies the ripple effect.
+     *
+     * @param {Object} event Touch or Mouse event.
+     */
+    _ripple: function (event) {
+      var $div = document.createElement('div'),
+        xPos = event.pageX - this.$.sealion.offsetLeft,
+        yPos = event.pageY - this.$.sealion.offsetTop,
+        height = this.$.sealion.offsetHeight,
+        width = this.$.sealion.offsetWidth,
+        top = yPos - (height / 2),
+        left = xPos - (height / 2);
+
+      addClass($div, 'ripple-effect');
+      $div.setAttribute("style", "height:" + height + "px; width:" + width + "px; top:" + top + "px; left:" + left + "px;")
+
+      this.$.sealion.appendChild($div);
+
+      window.setTimeout(function () {
+        $div.remove();
+      }, 1000);
+    }
+  });
+</script>
