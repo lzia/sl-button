@@ -1,14 +1,10 @@
 sl-button
 ============
 
-See the [component page](http://lzia.github.io/seed-element) for more information.
+See the [component page](http://lzia.github.io/sl-button) for more information.
 
 ## Getting Started
 
-### Installing
-```bash
- $ bower install --save sl-button
-```
 ### Styling
 ```css
   sl-button.foo {
@@ -25,5 +21,4 @@ See the [component page](http://lzia.github.io/seed-element) for more informatio
   <sl-button class="foo" label="X" action="fire"></sl-button>
 ```
 ## Browser Support
-
 Currently only Firefox (Shame on you, Chrome).
