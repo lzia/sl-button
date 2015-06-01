@@ -152,7 +152,7 @@ HTML:
     },
 
     /**
-     * Socket.IO's object that emits this element's events to Sealion
+     * Socket.IO's object that emits this element's events.
      * Console.
      *
      * @property socket
@@ -169,11 +169,11 @@ HTML:
       this.socket = socket;
     },
 
+
     /**
-     * Emits the action to the Sealion console.
+     * Sends the action via event or socket.
      *
-     * @event on-touchstart
-     * @param {Object} event on-touchstart callback.
+     * @param {Object} Touch event.
      */
     _handleTouchStart: function (event) {
       event.preventDefault();
@@ -184,14 +184,23 @@ HTML:
         socket.emit('event', {
           action: this.action
         });
+      } else {
+        /**
+         * Emits the action.
+         *
+         * @event touch-start
+         * @param {Object} The action.
+         */
+        this.fire('touch-start', {
+          action: this.action
+        });
       }
     },
 
     /**
-     * Emits the action to the Sealion console.
+     * Sends the action via event or socket.
      *
-     * @event on-touchend
-     * @param {Object} event on-touchend callback.
+     * @param {Object} Touch event.
      */
     _handleTouchEnd: function (event) {
       event.preventDefault();
@@ -199,14 +208,23 @@ HTML:
         socket.emit('event', {
           action: this.action
         });
+      } else {
+        /**
+         * Emits the action.
+         *
+         * @event touch-end
+         * @param {Object} The action.
+         */
+        this.fire('touch-end', {
+          action: this.action
+        });
       }
     },
 
     /**
-     * Emits the action to the Sealion console.
+     * Sends the action via event or socket.
      *
-     * @event on-mouseup
-     * @param {Object} event on-mouseup callback.
+     * @param {Object} Mouse event.
      */
     _handleMouseUp: function (event) {
       event.preventDefault();
@@ -214,19 +232,40 @@ HTML:
         socket.emit('event', {
           action: this.action
         });
+      } else {
+        /**
+         * Emits the action on mouse up.
+         *
+         * @event mouse-up
+         * @param {Object} The action.
+         */
+        this.fire('mouse-up', {
+          action: this.action
+        });
       }
     },
 
     /**
-     * Emits the action to the Sealion console.
+     * Sends the action via event or socket.
      *
-     * @event on-mousedown
-     * @param {Object} event on-mousedown callback.
+     * @param {Object} Mouse event.
      */
     _handleMouseDown: function (event) {
       event.preventDefault();
+      this._ripple(event);
       if (this.socket) {
         socket.emit('event', {
+          action: this.action
+        });
+      } else {
+        /**
+         * Emits the action on mouse down.
+         *
+         * @event mouse-down
+         * @param {Object} The action.
+         */
+        console.log(this.action);
+        this.fire('mouse-down', {
           action: this.action
         });
       }
@@ -255,5 +294,7 @@ HTML:
         $div.remove();
       }, 1000);
     }
+
+
   });
 </script>
