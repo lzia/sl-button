@@ -1,0 +1,36 @@
+{
+  "name": "sl-button",
+  "authors": [
+    "Lucas Liza <lucaslizza@gmail.com>"
+  ],
+  "description": "Custom arcade button that emits events through a socket.",
+  "keywords": [
+    "web-component",
+    "web-components",
+    "polymer"
+  ],
+  "main": "sl-button.html",
+  "license": "MIT",
+  "homepage": "https://github.com/lzia/sl-button/",
+  "ignore": [
+    "/.*",
+    "/test/"
+  ],
+  "dependencies": {
+    "polymer": "Polymer/polymer#^1.0.0"
+  },
+  "devDependencies": {
+    "iron-component-page": "PolymerElements/iron-component-page#^1.0.0",
+    "web-component-tester": "*"
+  },
+  "_release": "0b2b0c120b",
+  "_resolution": {
+    "type": "branch",
+    "branch": "master",
+    "commit": "0b2b0c120b096c753c3f73f0063db4239b1eceac"
+  },
+  "_source": "git://github.com/lzia/sl-button.git",
+  "_target": "master",
+  "_originalSource": "lzia/sl-button",
+  "_direct": true
+}
